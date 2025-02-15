@@ -1,16 +1,22 @@
 {
     "compilerOptions": {
-        "baseUrl": "./",
-        "jsx": "react",
-        "moduleResolution": "node",
-        "target": "ES6",
-        "module": "CommonJS",
+        "target": "ES2023",
+        "module": "ESNext",
+        "jsx": "react-native",
         "declaration": true,
         "outDir": "dist",
+        "rootDir": "src",
         "strict": true,
+        "moduleResolution": "node",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
+        "allowSyntheticDefaultImports": true,
+        "isolatedModules": true,
+        "lib": [
+            "es2023",
+            "dom"
+        ],
     },
     "include": [
         "src",
@@ -19,5 +25,7 @@
     "exclude": [
         "node_modules",
         "dist",
+        "src/assets",
+        "**/*.test.{ts|tsx}",
     ]
 }

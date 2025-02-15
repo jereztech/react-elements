@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
     Image,
     ImageStyle,
@@ -25,7 +25,7 @@ type LocalizedLanguage = {
     locale: string;
 }
 
-export interface Language {
+export type Language = {
     locale: string;
     nativeName?: string;
     localizedName?: string;
@@ -85,11 +85,11 @@ export default function LanguageSwitcher({
     placeholder = 'Select a language...',
     autocompleteStyle,
     inputContainerStyle,
-    inputProps,
     iconProps,
     listProps,
     listItemStyle,
-    languageStyle
+    languageStyle,
+    ...inputProps
 }: LanguageSwitcherProps) {
 
     const styles = useStyles(theme);
@@ -155,9 +155,9 @@ export default function LanguageSwitcher({
             fetchItems={filterLanguages}
             autocompleteStyle={autocompleteStyle}
             inputContainerStyle={inputContainerStyle}
-            inputProps={inputProps}
             iconProps={iconProps}
             listProps={listProps}
+            {...inputProps}
             renderItem={({ item: language }) => (
                 <View style={[styles.listItem, listItemStyle]}>
                     <Image

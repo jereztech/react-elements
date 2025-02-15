@@ -16,13 +16,17 @@ Below is an example of how to integrate the `PhoneInput` component into your app
 
 ```tsx
 import React from 'react';
-import PhoneInput from '@jereztech/react-elements';
+import { PhoneInput } from '@jereztech/react-elements';
 
 export default function App() {
   return (
     <PhoneInput
-      locale={locale}
-      onBlur={console.log}
+        locale={locale}
+        onValidate={phoneNumber => setState({ 
+            phoneNumber, 
+            phoneNumberValid: !!phoneNumber 
+        })}
+        onChangeText={phoneNumber => setState({ phoneNumber })}
     />
   );
 }
@@ -42,9 +46,8 @@ The following table outlines the props available for the `PhoneInput` component:
 | `iconProps`           | `Partial<IconProps>`                  | _None_  | Optional props to customize the Icon.                                                                                      |
 | `flagRounded`         | `boolean`                             | `'false'`  | If true, displays the country flags in a circular shape.                                                                   |
 | `flagStyle`           | `StyleProp<ImageStyle>`               | _None_  | Overrides the default style for the flag image.                                                                            |
-| `onBlur`              | `Function => void` | _None_  | Callback triggered when the input loses focus. The function receives the formatted phone number (or `undefined` if invalid). |
+| `onValidate`              | `Function => E164Number` | _None_  | Validates and returns the phone number in international format when loses focus. |
 | `inputContainerStyle` | `StyleProp<ViewStyle>`                | _None_  | Overrides the container style for the TextInput.                                                                           |
-| `inputProps`          | `Partial<TextInputProps>`             | _None_  | Overrides the default props for the TextInput.                                                                             |
 
 ## Demo
 

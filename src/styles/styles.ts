@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import Theme from './themes';
+import { Theme } from './themes';
 
 const margin = 12;
 const roundness = 4;

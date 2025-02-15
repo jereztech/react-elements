@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { ReactElement, useEffect, useRef } from 'react';
 import {
     ColorSchemeName,
     FlatList,
@@ -18,20 +18,16 @@ import { useMutableState } from '../../hooks';
 import { useStyles, useTheme } from '../../styles';
 import { isEmpty } from '../../utils';
 
-export interface AutocompleteItem<T> {
+export type AutocompleteItem<T> = {
     item: T;
     index: number;
 }
 
-export interface AutocompleteComponentProps<T> {
+export interface AutocompleteComponentProps<T> extends TextInputProps {
     /**
      * the user's preferred color scheme (e.g. Dark Mode)
      */
     theme?: ColorSchemeName;
-    /**
-     * Placeholder text for the TextInput.
-     */
-    placeholder?: string;
     /**
      * Overrides the Autocomplete style.
      */
@@ -40,10 +36,6 @@ export interface AutocompleteComponentProps<T> {
      * Overrides the TextInput container style.
      */
     inputContainerStyle?: StyleProp<ViewStyle>;
-    /**
-     * Overrides the TextInput props.
-     */
-    inputProps?: Partial<TextInputProps>;
     /**
      * Overrides the FlatList props.
      */
@@ -62,7 +54,7 @@ interface AutocompleteProps<T> extends AutocompleteComponentProps<T> {
     /**
      * Render function for each item.
      */
-    renderItem: (item: AutocompleteItem<T>) => React.ReactElement;
+    renderItem: (item: AutocompleteItem<T>) => ReactElement;
     /**
      * Optional debounce time (in milliseconds) for user input.
      */
@@ -88,9 +80,9 @@ export default function Autocomplete<T>({
     placeholder = 'Type to search...',
     autocompleteStyle,
     inputContainerStyle,
-    inputProps,
     iconProps,
     listProps,
+    ...inputProps
 }: AutocompleteProps<T>) {
 
     const styles = useStyles(appearance);
@@ -153,7 +145,7 @@ export default function Autocomplete<T>({
                     }}
                 />
                 {!!state.filter.length && (
-                    <TouchableOpacity onPress={handleClear}>
+                    <TouchableOpacity testID="clear-button" onPress={handleClear}>
                         <Icon name="close" style={styles.icon} {...iconProps} />
                     </TouchableOpacity>
                 )}
@@ -167,6 +159,7 @@ export default function Autocomplete<T>({
                 renderItem={({ item, index }) => (
                     <TouchableOpacity
                         key={`item-${index}`}
+                        testID={`item-${index}`}
                         onPress={() => {
                             onSelected && onSelected({ item, index });
                             handleClear();

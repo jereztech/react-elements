@@ -17,7 +17,7 @@ Below is an example of how to integrate the `LanguageSwitcher` component into yo
 
 ```tsx
 import React from 'react';
-import LanguageSwitcher from '@jereztech/react-elements';
+import { LanguageSwitcher } from '@jereztech/react-elements';
 
 export default function App() {
   return (

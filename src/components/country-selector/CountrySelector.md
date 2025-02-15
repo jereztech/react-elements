@@ -17,7 +17,7 @@ Below is an example of how to use the `CountrySelector` component:
 
 ```tsx
 import React from 'react';
-import CountrySelector from '@jereztech/react-elements';
+import { CountrySelector } from '@jereztech/react-elements';
 
 export default function App() {
   return (

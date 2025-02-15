@@ -1,6 +1,6 @@
 import { AsYouType, CountryCode, E164Number, getExampleNumber, isValidPhoneNumber } from 'libphonenumber-js';
 import examples from 'libphonenumber-js/mobile/examples';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     ColorSchemeName,
     Image,
@@ -21,7 +21,7 @@ import { useMutableState } from '../../hooks';
 import { useStyles, useTheme } from '../../styles';
 import CountrySelector, { Country } from '../country-selector/CountrySelector';
 
-interface PhoneInputProps {
+interface PhoneInputProps extends TextInputProps {
     /**
      * the user's preferred color scheme (e.g. Dark Mode)
      */
@@ -34,10 +34,6 @@ interface PhoneInputProps {
      * Locale for country translations.
      */
     locale?: string;
-    /**
-     * Placeholder text for the TextInput.
-     */
-    placeholder?: string;
     /**
      * If false, disable TextInput.
      */
@@ -55,17 +51,13 @@ interface PhoneInputProps {
      */
     flagStyle?: StyleProp<ImageStyle>;
     /**
-     * Callback when loses focus. Validates and returns the phone number in international format.
-     */
-    onBlur: (phoneNumber: E164Number | undefined) => void;
-    /**
      * Overrides the TextInput container style.
      */
     inputContainerStyle?: StyleProp<ViewStyle>;
     /**
-     * Overrides the TextInput props.
+     * Validates and returns the phone number in international format when loses focus.
      */
-    inputProps?: Partial<TextInputProps>;
+    onValidate: (phoneNumber: E164Number | undefined) => void;
 }
 
 type PhoneInputState = {
@@ -86,9 +78,9 @@ export default function PhoneInput({
     iconProps,
     flagStyle,
     flagRounded = false,
-    onBlur,
     inputContainerStyle,
-    inputProps,
+    onValidate,
+    ...inputProps
 }: PhoneInputProps) {
 
     const styles = useStyles(appearance);
@@ -132,6 +124,15 @@ export default function PhoneInput({
                 input
         );
         setState({ phoneNumber, phoneNumberValid: true, focused: true });
+        inputProps?.onChangeText && inputProps.onChangeText(phoneNumber);
+    }
+
+    const handleBlur = (e: any) => {
+        const numberValue = formatter.getNumberValue();
+        const phoneNumberValid = numberValue && isValidPhoneNumber(numberValue);
+        setState({ focused: false, phoneNumberValid });
+        onValidate(numberValue);
+        inputProps?.onBlur && inputProps.onBlur(e);
     }
 
     return (
@@ -170,12 +171,7 @@ export default function PhoneInput({
                     maxLength={state.exampleNumber?.length}
                     editable={editable && !!state.country}
                     onChangeText={handleChange}
-                    onBlur={() => {
-                        const numberValue = formatter.getNumberValue();
-                        const phoneNumberValid = numberValue && isValidPhoneNumber(numberValue);
-                        setState({ focused: false, phoneNumberValid });
-                        onBlur(numberValue);
-                    }}
+                    onBlur={handleBlur}
                 />
             </View>
             <Modal

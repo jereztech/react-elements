@@ -34,14 +34,14 @@ The component is generic, meaning it can handle any data type. You must provide 
 ```tsx
 import React from 'react';
 import { View, Text, Image } from 'react-native';
-import Autocomplete from '@jereztech/react-elements';
+import { Autocomplete } from '@jereztech/react-elements';
 
 export default function App() {
   return (
     <Autocomplete<Country>
       fetchItems={filter => filterCountries(filter)}
       renderItem={({ item: country }) => (
-        <View style={[styles.listItem]}>
+        <View style={styles.listItem}>
           <Image source={{ uri: country.flagUri }} style={styles.flagRounded} />
           <Text style={styles.text}>
             {`(+${country.callingCode}) ${country.name}`}
@@ -49,6 +49,7 @@ export default function App() {
         </View>
       )}
       onSelected={({ item }) => onSelected({ item })}
+      onChangeText={filter => setState({ filter })}
     />
   );
 }
@@ -62,7 +63,6 @@ export default function App() {
 | `placeholder`          | `string`                       | `'Type to search...'`    | Placeholder text for the TextInput.                                 |
 | `autocompleteStyle`    | `StyleProp<ViewStyle>`         | _None_                   | Overrides the Autocomplete container style.                         |
 | `inputContainerStyle`  | `StyleProp<ViewStyle>`         | _None_                   | Overrides the TextInput container style.                            |
-| `inputProps`           | `Partial<TextInputProps>`      | _None_                   | Overrides the default TextInput props.                              |
 | `listProps`            | `Partial<FlatListProps<T>>`    | _None_                   | Overrides the default FlatList props.                               |
 | `iconProps`            | `Partial<IconProps>`           | _None_                   | Overrides the default Icon props.                                   |
 | `fetchItems`  | `Function => Promise<T[]>`                               | _None_  | Function to fetch items based on the provided search filter.                          |

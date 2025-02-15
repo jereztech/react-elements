@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Appearance, ColorSchemeName } from "react-native";
-import Theme, { darkTheme, lightTheme } from "./themes";
+import { darkTheme, lightTheme, Theme } from "./themes";
 
 const getAppearance = (colorScheme?: ColorSchemeName): Theme => colorScheme === 'dark' ? darkTheme : lightTheme;
 

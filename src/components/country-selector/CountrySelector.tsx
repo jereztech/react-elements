@@ -1,5 +1,5 @@
 import { CountryCallingCode, CountryCode, getCountries, getCountryCallingCode } from 'libphonenumber-js';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Image, ImageStyle, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { useStyles } from '../../styles';
 import { isEmpty, stripAccents } from '../../utils';
@@ -12,7 +12,7 @@ type CountryPayload = {
     country: string;
 }
 
-export interface Country {
+export type Country = {
     code: CountryCode;
     name: string;
     callingCode?: CountryCallingCode;
@@ -69,11 +69,11 @@ export default function CountrySelector({
     placeholder = 'Select a country...',
     autocompleteStyle,
     inputContainerStyle,
-    inputProps,
     iconProps,
     listProps,
     listItemStyle,
-    countryStyle
+    countryStyle,
+    ...inputProps
 }: CountrySelectorProps) {
 
     const styles = useStyles(theme);
@@ -116,9 +116,9 @@ export default function CountrySelector({
             fetchItems={filterCountries}
             autocompleteStyle={autocompleteStyle}
             inputContainerStyle={inputContainerStyle}
-            inputProps={inputProps}
             iconProps={iconProps}
             listProps={listProps}
+            {...inputProps}
             renderItem={({ item: country }) => (
                 <View style={[styles.listItem, listItemStyle]}>
                     <Image
