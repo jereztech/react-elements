@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "jsx": "react",
+        "moduleResolution": "node",
+        "target": "ES6",
+        "module": "CommonJS",
+        "declaration": true,
+        "outDir": "dist",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+    },
+    "include": [
+        "src",
+        "**/*.d.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+    ]
+}
