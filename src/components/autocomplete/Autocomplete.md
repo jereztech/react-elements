@@ -2,15 +2,6 @@
 
 The Autocomplete component provides an easy-to-use and customizable autocomplete functionality for your React Native applications. It allows you to fetch suggestions dynamically as the user types, render custom items, and handle item selection.
 
-## Table of Contents
-
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Props](#props)
-- [Demo](#demo)
-- [License](#license)
-
 ## Features
 
 - **Dynamic Data Fetching:** Fetch items based on a search filter.
@@ -18,14 +9,6 @@ The Autocomplete component provides an easy-to-use and customizable autocomplete
 - **Theming:** Supports light and dark modes.
 - **Style Overrides:** Customize the autocomplete container, input container, list, and icons.
 - **Debouncing:** Optional debounce to reduce the number of requests on rapid input.
-
-## Installation
-
-```bash
-npm install @jereztech/react-elements
-# or
-yarn add @jereztech/react-elements
-```
 
 ## Usage
 

@@ -9,7 +9,7 @@ import {
     ViewStyle
 } from 'react-native';
 import { useStyles } from '../../styles';
-import { isCountryIso, isEmpty, normalizeLocale, stripAccents } from '../../utils';
+import { DEFAULT_LOCALE, isCountryIso, isEmpty, normalizeLocale, stripAccents } from '../../utils';
 import Autocomplete, { AutocompleteComponentProps } from '../autocomplete/Autocomplete';
 
 type LanguageSwitcherVariant = 'native' | 'localized';
@@ -77,7 +77,7 @@ const FLAGS_URI = 'https://raw.githubusercontent.com/jereztech/react-elements/re
 export default function LanguageSwitcher({
     theme,
     supportedLocales,
-    locale = 'en-US',
+    locale = DEFAULT_LOCALE,
     variant = 'native',
     onSelected,
     flagStyle,

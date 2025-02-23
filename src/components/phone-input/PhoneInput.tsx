@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { IconProps } from 'react-native-vector-icons/Icon';
 import { useMutableState } from '../../hooks';
 import { useStyles, useTheme } from '../../styles';
+import { DEFAULT_COUNTRY, DEFAULT_LOCALE } from '../../utils';
 import CountrySelector, { Country } from '../country-selector/CountrySelector';
 
 interface PhoneInputProps extends TextInputProps {
@@ -55,6 +56,10 @@ interface PhoneInputProps extends TextInputProps {
      */
     inputContainerStyle?: StyleProp<ViewStyle>;
     /**
+     * Overrides the Modal container style.
+     */
+    modalStyle?: StyleProp<ViewStyle>;
+    /**
      * Validates and returns the phone number in international format when loses focus.
      */
     onValidate: (phoneNumber: E164Number | undefined) => void;
@@ -71,14 +76,15 @@ type PhoneInputState = {
 
 export default function PhoneInput({
     theme: appearance,
-    defaultCountry = 'US',
-    locale = 'en-US',
+    defaultCountry = DEFAULT_COUNTRY,
+    locale = DEFAULT_LOCALE,
     placeholder = 'Phone Number',
     editable = true,
     iconProps,
     flagStyle,
     flagRounded = false,
     inputContainerStyle,
+    modalStyle,
     onValidate,
     ...inputProps
 }: PhoneInputProps) {
@@ -136,7 +142,7 @@ export default function PhoneInput({
     }
 
     return (
-        <View style={styles.flexGrow}>
+        <View>
             <View style={[
                 styles.inputContainer,
                 state.focused && styles.focused,
@@ -148,7 +154,7 @@ export default function PhoneInput({
                     onPress={() => setState({ showCallingCodes: true })}
                 >
                     {state.country ?
-                        <View style={styles.flexRow}>
+                        <View style={styles.row}>
                             <Image
                                 source={{ uri: state.country.flagUri }}
                                 style={[styles.flag, flagRounded && styles.flagRounded, flagStyle]}
@@ -157,14 +163,17 @@ export default function PhoneInput({
                                 +{state.country.callingCode}
                             </Text>
                         </View> :
-                        <Icon name="phone" style={styles.icon} {...iconProps} />
+                        <Icon name="phone" {...iconProps} style={[styles.inputIcon, iconProps?.style]} />
                     }
                 </TouchableOpacity>
                 <TextInput
-                    style={styles.input}
                     placeholder={state.exampleNumber || placeholder}
-                    placeholderTextColor={state.exampleNumber ? theme.placeholder : theme.text}
+                    placeholderTextColor={state.exampleNumber ?
+                        theme.colors.onSurfaceVariant :
+                        styles.inputText.color
+                    }
                     {...inputProps}
+                    style={[styles.inputText, inputProps?.style]}
                     ref={inputRef}
                     keyboardType="phone-pad"
                     value={state.phoneNumber}
@@ -177,9 +186,9 @@ export default function PhoneInput({
             <Modal
                 visible={state.showCallingCodes}
                 animationType="slide"
-                style={{ backgroundColor: theme.background }}
+                style={[{ backgroundColor: theme.colors.surface }, modalStyle]}
             >
-                <SafeAreaView style={styles.flexGrow}>
+                <SafeAreaView style={styles.container}>
                     <CountrySelector
                         locale={locale}
                         theme={appearance}

@@ -2,7 +2,7 @@ import { CountryCallingCode, CountryCode, getCountries, getCountryCallingCode } 
 import { useCallback, useEffect, useState } from 'react';
 import { Image, ImageStyle, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { useStyles } from '../../styles';
-import { isEmpty, stripAccents } from '../../utils';
+import { DEFAULT_LOCALE, isEmpty, stripAccents } from '../../utils';
 import Autocomplete, { AutocompleteComponentProps } from '../autocomplete/Autocomplete';
 
 type CountrySelectorVariant = 'countries' | 'callingCodes';
@@ -61,7 +61,7 @@ const FLAGS_URI = 'https://raw.githubusercontent.com/jereztech/react-elements/re
 export default function CountrySelector({
     theme,
     countryCodes = getCountries(),
-    locale = 'en-US',
+    locale = DEFAULT_LOCALE,
     variant = 'countries',
     onSelected,
     flagStyle,

@@ -56,7 +56,6 @@ The following table outlines the props for `LanguageSwitcher` and explains each 
 | `placeholder`          | `string`                       | `'Select a language...'` | Placeholder text for the TextInput.                                 |
 | `autocompleteStyle`    | `StyleProp<ViewStyle>`         | _None_                   | Overrides the Autocomplete container style.                         |
 | `inputContainerStyle`  | `StyleProp<ViewStyle>`         | _None_                   | Overrides the TextInput container style.                            |
-| `inputProps`           | `Partial<TextInputProps>`      | _None_                   | Overrides the default TextInput props.                              |
 | `listProps`            | `Partial<FlatListProps<T>>`    | _None_                   | Overrides the default FlatList props.                               |
 | `iconProps`            | `Partial<IconProps>`           | _None_                   | Overrides the default Icon props.                                   |
 

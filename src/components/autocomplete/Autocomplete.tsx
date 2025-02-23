@@ -129,15 +129,15 @@ export default function Autocomplete<T>({
     return (
         <View style={[styles.container, autocompleteStyle]}>
             <View style={[styles.inputContainer, inputContainerStyle]}>
-                <Icon name="search" style={styles.icon} {...iconProps} />
+                <Icon name="search" {...iconProps} style={[styles.inputIcon, iconProps?.style]} />
                 <TextInput
-                    style={styles.input}
                     placeholder={placeholder}
-                    placeholderTextColor={theme.text}
+                    placeholderTextColor={theme.colors.onSurfaceVariant}
                     autoCapitalize='none'
                     autoCorrect={false}
                     autoFocus
                     {...inputProps}
+                    style={[styles.inputText, inputProps?.style]}
                     value={state.filter}
                     onChangeText={(filter: string) => {
                         setState({ filter });
@@ -146,15 +146,15 @@ export default function Autocomplete<T>({
                 />
                 {!!state.filter.length && (
                     <TouchableOpacity testID="clear-button" onPress={handleClear}>
-                        <Icon name="close" style={styles.icon} {...iconProps} />
+                        <Icon name="close" style={styles.inputIcon} {...iconProps} />
                     </TouchableOpacity>
                 )}
             </View>
             <FlatList
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
-                style={styles.list}
                 {...listProps}
+                style={[styles.list, listProps?.style]}
                 data={state.filteredItems}
                 renderItem={({ item, index }) => (
                     <TouchableOpacity

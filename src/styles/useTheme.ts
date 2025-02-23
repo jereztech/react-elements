@@ -1,18 +1,21 @@
-import { useEffect, useState } from "react";
-import { Appearance, ColorSchemeName } from "react-native";
-import { darkTheme, lightTheme, Theme } from "./themes";
+import { useCallback } from "react";
+import { ColorSchemeName } from "react-native";
+import { useThemeContext } from "./ThemeProvider";
+import type { Theme } from "./types";
 
-const getAppearance = (colorScheme?: ColorSchemeName): Theme => colorScheme === 'dark' ? darkTheme : lightTheme;
+/**
+ * This dynamic hook was created with the hope of being able to change the styles of an individual component without changing the entire context. 
+ * Ex: light button on a dark CTA in a light style context.
+ * 
+ * @param colorScheme 
+ */
+export default function useTheme(colorScheme?: ColorSchemeName): Theme {
 
-export default function useTheme(colorScheme?: ColorSchemeName) {
+    const { currentTheme, getAppearance } = useThemeContext();
 
-    const [theme, setTheme] = useState<Theme>(() => getAppearance(colorScheme));
+    const getTheme = useCallback(() => {
+        return !!colorScheme ? getAppearance(colorScheme) : currentTheme;
+    }, [colorScheme, currentTheme]);
 
-    useEffect(() => {
-        const appearance$ = Appearance
-            .addChangeListener(({ colorScheme }) => setTheme(getAppearance(colorScheme)));
-        return () => appearance$.remove();
-    }, []);
-
-    return theme;
+    return getTheme();
 }

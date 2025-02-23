@@ -1,79 +1,82 @@
-import { StyleSheet } from 'react-native';
-import { Theme } from './themes';
+import { StyleSheet } from "react-native";
+import type { Theme } from "./types";
 
-const margin = 12;
-const roundness = 4;
-const fontSize = 16;
-const borderWidth = 1;
+const BORDER_WIDTH = 1;
+export const ICON_SIZE = 24;
 
-export const createStyles = (theme: Theme) => StyleSheet.create({
+export const createStyles = ({ colors, typography, roundness, spacing }: Theme) => StyleSheet.create({
     container: {
-        margin,
         flex: 1,
-        backgroundColor: theme.background
+        padding: spacing
     },
-    flexGrow: {
+    disabled: {
+        opacity: 0.7
+    },
+    centered: {
         flex: 1,
-        backgroundColor: theme.background
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    flexRow: {
+    row: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    justified: {
+        flexGrow: 1,
+        justifyContent: 'space-between',
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderColor: theme.outline,
-        borderWidth,
+        borderColor: colors.outline,
+        borderWidth: BORDER_WIDTH,
         borderRadius: roundness,
-        backgroundColor: theme.input,
-        padding: 8,
-        height: 50,
+        padding: 5,
+        height: 54,
+        backgroundColor: colors.tertiaryContainer
     },
-    input: {
-        color: theme.text,
-        fontSize,
-        paddingLeft: 10,
+    inputText: {
         flex: 1,
+        paddingLeft: spacing,
+        fontSize: typography.body.medium.fontSize,
+        color: colors.onTertiaryContainer,
+    },
+    inputIcon: {
+        marginHorizontal: 10,
+        fontSize: typography.body.medium.fontSize,
+        color: colors.onTertiaryContainer,
     },
     error: {
-        borderColor: theme.error,
-        color: theme.error,
+        borderColor: colors.error,
+        color: colors.error,
     },
     focused: {
-        borderColor: theme.accent,
-    },
-    icon: {
-        marginHorizontal: margin,
-        color: theme.text,
-        fontSize: 20,
+        borderColor: colors.outlineVariant,
     },
     text: {
-        color: theme.text,
-        fontSize,
+        ...typography.body.medium,
     },
     list: {
-        marginTop: margin,
-        backgroundColor: theme.background
+        marginTop: spacing,
     },
     listItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 8,
-        paddingVertical: margin
+        paddingHorizontal: spacing - 4,
+        paddingVertical: spacing
     },
     flag: {
         width: 32,
         height: 20,
-        marginRight: margin,
+        marginRight: spacing,
         resizeMode: 'cover',
-        borderColor: theme.outline,
-        borderWidth,
-        borderRadius: 2,
+        borderColor: colors.outline,
+        borderWidth: BORDER_WIDTH,
+        borderRadius: roundness,
     },
     flagRounded: {
         width: 30,
         height: 30,
-        borderRadius: fontSize,
+        borderRadius: 35,
     },
 });
