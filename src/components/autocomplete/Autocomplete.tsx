@@ -118,7 +118,7 @@ export default function Autocomplete<T>({
         return () => {
             subscription.unsubscribe();
         };
-    }, [timeframe, fetchItems, input$]);
+    }, [timeframe, fetchItems, state.items, input$]);
 
     const handleClear = () => {
         const filter = '';

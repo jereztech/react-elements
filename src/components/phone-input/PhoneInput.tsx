@@ -1,6 +1,6 @@
 import { AsYouType, CountryCode, E164Number, getExampleNumber, isValidPhoneNumber } from 'libphonenumber-js';
 import examples from 'libphonenumber-js/mobile/examples';
-import { useEffect, useRef, useState } from 'react';
+import { ComponentType, PropsWithChildren, useEffect, useRef, useState } from 'react';
 import {
     ColorSchemeName,
     Image,
@@ -21,6 +21,13 @@ import { useMutableState } from '../../hooks';
 import { useStyles, useTheme } from '../../styles';
 import { DEFAULT_COUNTRY, DEFAULT_LOCALE } from '../../utils';
 import CountrySelector, { Country } from '../country-selector/CountrySelector';
+
+interface CountrySelectorWrapperProps extends PropsWithChildren {
+    /**
+     * Callback to close the Modal.
+     */
+    onDismiss?: () => void;
+}
 
 interface PhoneInputProps extends TextInputProps {
     /**
@@ -60,6 +67,11 @@ interface PhoneInputProps extends TextInputProps {
      */
     modalStyle?: StyleProp<ViewStyle>;
     /**
+     * An optional wrapper component to render inside the Modal for the CountrySelector. 
+     * Defaults to SafeAreaView.    
+     */
+    CountrySelectorWrapper?: ComponentType<CountrySelectorWrapperProps>;
+    /**
      * Validates and returns the phone number in international format when loses focus.
      */
     onValidate: (phoneNumber: E164Number | undefined) => void;
@@ -85,6 +97,7 @@ export default function PhoneInput({
     flagRounded = false,
     inputContainerStyle,
     modalStyle,
+    CountrySelectorWrapper,
     onValidate,
     ...inputProps
 }: PhoneInputProps) {
@@ -141,6 +154,8 @@ export default function PhoneInput({
         inputProps?.onBlur && inputProps.onBlur(e);
     }
 
+    const CountrySelectorContainer = CountrySelectorWrapper || SafeAreaView;
+
     return (
         <View>
             <View style={[
@@ -188,7 +203,10 @@ export default function PhoneInput({
                 animationType="slide"
                 style={[{ backgroundColor: theme.colors.surface }, modalStyle]}
             >
-                <SafeAreaView style={styles.container}>
+                <CountrySelectorContainer
+                    style={styles.container}
+                    onDismiss={() => setState({ showCallingCodes: false })}
+                >
                     <CountrySelector
                         locale={locale}
                         theme={appearance}
@@ -200,7 +218,7 @@ export default function PhoneInput({
                             showCallingCodes: false
                         })}
                     />
-                </SafeAreaView>
+                </CountrySelectorContainer>
             </Modal>
         </View>
     );

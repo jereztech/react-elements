@@ -37,7 +37,7 @@ export const createStyles = ({ colors, typography, roundness, spacing }: Theme) 
     },
     inputText: {
         flex: 1,
-        paddingLeft: spacing,
+        paddingLeft: 5,
         fontSize: typography.body.medium.fontSize,
         color: colors.onTertiaryContainer,
     },
@@ -68,7 +68,7 @@ export const createStyles = ({ colors, typography, roundness, spacing }: Theme) 
     flag: {
         width: 32,
         height: 20,
-        marginRight: spacing,
+        marginHorizontal: spacing,
         resizeMode: 'cover',
         borderColor: colors.outline,
         borderWidth: BORDER_WIDTH,

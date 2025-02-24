@@ -15,18 +15,25 @@ The `PhoneInput` component allows you to:
 Below is an example of how to integrate the `PhoneInput` component into your application:
 
 ```tsx
-import React from 'react';
 import { PhoneInput } from '@jereztech/react-elements';
 
 export default function App() {
   return (
     <PhoneInput
         locale={locale}
-        onValidate={phoneNumber => setState({ 
-            phoneNumber, 
-            phoneNumberValid: !!phoneNumber 
-        })}
+        flagRounded
+        onValidate={phoneNumber => setState({ phoneNumber })}
         onChangeText={phoneNumber => setState({ phoneNumber })}
+        CountrySelectorWrapper={({ children, onDismiss }) => (
+            <View style={{ flex: 1 }}>
+                <Header
+                    heading='select-country'
+                    trailingIcon='close'
+                    trailingIconAction={onDismiss}
+                />
+                {children}
+            </View>
+        )}
     />
   );
 }
@@ -48,6 +55,7 @@ The following table outlines the props available for the `PhoneInput` component:
 | `flagStyle`           | `StyleProp<ImageStyle>`               | _None_  | Overrides the default style for the flag image.                                                                            |
 | `onValidate`              | `Function => E164Number` | _None_  | Validates and returns the phone number in international format when loses focus. |
 | `inputContainerStyle` | `StyleProp<ViewStyle>`                | _None_  | Overrides the container style for the TextInput.                                                                           |
+| `CountrySelectorWrapper` | `ComponentType<CountrySelectorWrapperProps>`                | `SafeAreaView`  | An optional wrapper component to render inside the Modal for the CountrySelector.                                                                           |
 
 ## Demo
 
