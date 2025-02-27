@@ -31,7 +31,7 @@ interface CountrySelectorWrapperProps extends PropsWithChildren {
 
 interface PhoneInputProps extends TextInputProps {
     /**
-     * the user's preferred color scheme (e.g. Dark Mode)
+     * The user's preferred color scheme ("light" | "dark").
      */
     theme?: ColorSchemeName;
     /**
@@ -67,10 +67,14 @@ interface PhoneInputProps extends TextInputProps {
      */
     modalStyle?: StyleProp<ViewStyle>;
     /**
-     * An optional wrapper component to render inside the Modal for the CountrySelector. 
+     * An optional wrapper component for the CountrySelector. 
      * Defaults to SafeAreaView.    
      */
     CountrySelectorWrapper?: ComponentType<CountrySelectorWrapperProps>;
+    /**
+     * Custom placeholder for the CountrySelector.    
+     */
+    countrySelectorPlaceholder?: string;
     /**
      * Validates and returns the phone number in international format when loses focus.
      */
@@ -98,6 +102,7 @@ export default function PhoneInput({
     inputContainerStyle,
     modalStyle,
     CountrySelectorWrapper,
+    countrySelectorPlaceholder,
     onValidate,
     ...inputProps
 }: PhoneInputProps) {
@@ -212,6 +217,7 @@ export default function PhoneInput({
                         theme={appearance}
                         flagRounded={flagRounded}
                         variant="callingCodes"
+                        placeholder={countrySelectorPlaceholder}
                         onSelected={(country: Country) => setState({
                             country,
                             phoneNumber: '',

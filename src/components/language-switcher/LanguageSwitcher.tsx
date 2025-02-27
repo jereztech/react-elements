@@ -151,6 +151,7 @@ export default function LanguageSwitcher({
 
     return (
         <Autocomplete<Language>
+            theme={theme}
             placeholder={placeholder}
             fetchItems={filterLanguages}
             autocompleteStyle={autocompleteStyle}

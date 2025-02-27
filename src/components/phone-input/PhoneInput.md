@@ -56,6 +56,7 @@ The following table outlines the props available for the `PhoneInput` component:
 | `onValidate`              | `Function => E164Number` | _None_  | Validates and returns the phone number in international format when loses focus. |
 | `inputContainerStyle` | `StyleProp<ViewStyle>`                | _None_  | Overrides the container style for the TextInput.                                                                           |
 | `CountrySelectorWrapper` | `ComponentType<CountrySelectorWrapperProps>`                | `SafeAreaView`  | An optional wrapper component to render inside the Modal for the CountrySelector.                                                                           |
+| `countrySelectorPlaceholder` | `string`                | `'Select a country...'`  | Custom placeholder for the CountrySelector.                                                                           |
 
 ## Demo
 

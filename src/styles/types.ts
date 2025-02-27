@@ -8,51 +8,42 @@ import { ColorSchemeName, TextStyle } from 'react-native';
 export type Palette = {
     primary: string;
     onPrimary: string;
-    primaryContainer?: string;
-    onPrimaryContainer?: string;
-    secondary?: string;
-    onSecondary?: string;
-    secondaryContainer?: string;
-    onSecondaryContainer?: string;
-    tertiary?: string;
-    onTertiary?: string;
+    primaryContainer: string;
+    onPrimaryContainer: string;
+    secondary: string;
+    onSecondary: string;
+    secondaryContainer: string;
+    onSecondaryContainer: string;
+    tertiary: string;
+    onTertiary: string;
     tertiaryContainer: string;
     onTertiaryContainer: string;
     error: string;
     onError: string;
-    errorContainer?: string;
-    onErrorContainer?: string;
+    errorContainer: string;
+    onErrorContainer: string;
     surface: string;
-    surfaceContainer?: string;
+    surfaceContainer: string;
     onSurface: string;
-    onSurfaceVariant?: string;
-    inverseSurface?: string;
-    inverseOnSurface?: string;
-    inversePrimary?: string;
+    onSurfaceVariant: string;
+    inverseSurface: string;
+    inverseOnSurface: string;
+    inversePrimary: string;
     outline: string;
-    outlineVariant?: string;
-}
+    outlineVariant: string;
+} & { [addon: string]: string; };
 
-export type TypographyScale = 'small' | 'medium' | 'large';
+export type Typescale = 'display' | 'headline' | 'title' | 'body' | 'label';
+
+export type TypescaleSize = 'small' | 'medium' | 'large';
 
 export type Typography = {
     fontFamily: string;
-    display?: {
-        [scale in TypographyScale]: TextStyle;
+} & {
+    [typescale in Typescale]: {
+        [size in TypescaleSize]: TextStyle;
     };
-    headline?: {
-        [scale in TypographyScale]: TextStyle;
-    };
-    title?: {
-        [scale in TypographyScale]: TextStyle;
-    };
-    label: {
-        [scale in TypographyScale]: TextStyle;
-    };
-    body: {
-        [scale in TypographyScale]: TextStyle;
-    };
-}
+};
 
 export type Theme = {
     schemeName: ColorSchemeName;
@@ -66,4 +57,4 @@ export type Theme = {
     colors: Palette;
     typography: Typography;
     mixin: (factor: number) => number;
-}
+};

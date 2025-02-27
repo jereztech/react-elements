@@ -25,7 +25,7 @@ export type AutocompleteItem<T> = {
 
 export interface AutocompleteComponentProps<T> extends TextInputProps {
     /**
-     * the user's preferred color scheme (e.g. Dark Mode)
+     * The user's preferred color scheme ("light" | "dark").
      */
     theme?: ColorSchemeName;
     /**
@@ -146,7 +146,7 @@ export default function Autocomplete<T>({
                 />
                 {!!state.filter.length && (
                     <TouchableOpacity testID="clear-button" onPress={handleClear}>
-                        <Icon name="close" style={styles.inputIcon} {...iconProps} />
+                        <Icon name="close" {...iconProps} style={[styles.inputIcon, iconProps?.style]} />
                     </TouchableOpacity>
                 )}
             </View>
@@ -154,8 +154,8 @@ export default function Autocomplete<T>({
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
                 {...listProps}
-                style={[styles.list, listProps?.style]}
                 data={state.filteredItems}
+                style={[styles.list, listProps?.style]}
                 renderItem={({ item, index }) => (
                     <TouchableOpacity
                         key={`item-${index}`}

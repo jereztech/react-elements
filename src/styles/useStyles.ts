@@ -5,7 +5,7 @@ import useTheme from "./useTheme";
 
 /**
  * This dynamic hook was created with the hope of being able to change the styles of an individual component without changing the entire context. 
- * Ex: light button on a dark CTA in a light style context.
+ * Ex: light button on a dark CTA in a light style context or to force 'light' if 'dark' is not supported.
  * 
  * @param colorScheme 
  */

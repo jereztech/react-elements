@@ -112,6 +112,7 @@ export default function CountrySelector({
 
     return (
         <Autocomplete<Country>
+            theme={theme}
             placeholder={placeholder}
             fetchItems={filterCountries}
             autocompleteStyle={autocompleteStyle}

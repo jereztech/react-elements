@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import type { Theme } from "./types";
 
-const BORDER_WIDTH = 1;
+export const BORDER_WIDTH = 1;
 export const ICON_SIZE = 24;
 
 export const createStyles = ({ colors, typography, roundness, spacing }: Theme) => StyleSheet.create({
@@ -37,21 +37,21 @@ export const createStyles = ({ colors, typography, roundness, spacing }: Theme) 
     },
     inputText: {
         flex: 1,
-        paddingLeft: 5,
-        fontSize: typography.body.medium.fontSize,
+        paddingLeft: 10,
+        fontSize: typography.title.small.fontSize,
         color: colors.onTertiaryContainer,
     },
     inputIcon: {
-        marginHorizontal: 10,
-        fontSize: typography.body.medium.fontSize,
-        color: colors.onTertiaryContainer,
+        marginHorizontal: spacing,
+        fontSize: typography.title.large.fontSize,
+        color: colors.outline,
     },
     error: {
         borderColor: colors.error,
         color: colors.error,
     },
     focused: {
-        borderColor: colors.outlineVariant,
+        borderColor: colors.onTertiaryContainer,
     },
     text: {
         ...typography.body.medium,
