@@ -1,6 +1,14 @@
-import { AsYouType, CountryCode, E164Number, getExampleNumber, isValidPhoneNumber } from 'libphonenumber-js';
+import parsePhoneNumberFromString, {
+    AsYouType,
+    CountryCode,
+    getExampleNumber,
+    isPossiblePhoneNumber,
+    isValidPhoneNumber,
+    PhoneNumber
+} from 'libphonenumber-js';
+
 import examples from 'libphonenumber-js/mobile/examples';
-import { ComponentType, PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { ComponentType, PropsWithChildren, useEffect, useRef } from 'react';
 import {
     ColorSchemeName,
     Image,
@@ -19,7 +27,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { IconProps } from 'react-native-vector-icons/Icon';
 import { useMutableState } from '../../hooks';
 import { useStyles, useTheme } from '../../styles';
-import { DEFAULT_COUNTRY, DEFAULT_LOCALE } from '../../utils';
+import { DEFAULT_COUNTRY, DEFAULT_LOCALE, FLAGS_URI } from '../../utils';
 import CountrySelector, { Country } from '../country-selector/CountrySelector';
 
 interface CountrySelectorWrapperProps extends PropsWithChildren {
@@ -74,16 +82,20 @@ interface PhoneInputProps extends TextInputProps {
     /**
      * Custom placeholder for the CountrySelector.    
      */
-    countrySelectorPlaceholder?: string;
+    countryPlaceholder?: string;
     /**
-     * Validates and returns the phone number in international format when loses focus.
+     * The controlled phone input value.
      */
-    onValidate: (phoneNumber: E164Number | undefined) => void;
+    value?: string;
+    /**
+     * Returns the phone number in `PhoneNumber` format.
+     */
+    onChangeValue?: (phoneNumber?: PhoneNumber) => void;
 }
 
 type PhoneInputState = {
     country: Country | null;
-    phoneNumber: string;
+    displayValue: string;
     phoneNumberValid: boolean;
     exampleNumber: string | null;
     showCallingCodes: boolean;
@@ -102,61 +114,79 @@ export default function PhoneInput({
     inputContainerStyle,
     modalStyle,
     CountrySelectorWrapper,
-    countrySelectorPlaceholder,
-    onValidate,
+    countryPlaceholder,
+    style,
+    value = '',
+    onChangeValue,
+    onChangeText,
+    onBlur,
     ...inputProps
 }: PhoneInputProps) {
 
     const styles = useStyles(appearance);
     const theme = useTheme(appearance);
 
-    const [countryCode, setCountryCode] = useState<CountryCode>(defaultCountry);
-
-    const formatter = new AsYouType(countryCode);
+    const formatterRef = useRef<AsYouType>(new AsYouType(defaultCountry));
+    const inputRef = useRef<TextInput>(null);
 
     const [state, setState] = useMutableState<PhoneInputState>({
         country: null,
-        phoneNumber: '',
+        displayValue: '',
         phoneNumberValid: true,
         showCallingCodes: false,
         exampleNumber: null,
         focused: false,
     });
 
-    const inputRef = useRef<any>(null);
+    useEffect(() => {
+        if (isPossiblePhoneNumber(value, defaultCountry)) {
+            const phoneNumber = parsePhoneNumberFromString(value, defaultCountry);
+            if (phoneNumber) {
+                const countryCode = phoneNumber.country || defaultCountry;
+                setState({
+                    country: {
+                        code: countryCode,
+                        callingCode: phoneNumber.countryCallingCode,
+                        flagUri: `${FLAGS_URI}/${countryCode.toLowerCase()}.png`
+                    } as Country,
+                    displayValue: phoneNumber.formatNational()
+                });
+            }
+        }
+    }, [value]);
 
     useEffect(() => {
         if (state.country) {
             const countryCode = state.country.code;
             const exampleNumber = getExampleNumber(countryCode, examples);
-            setCountryCode(countryCode);
-            setState({
-                exampleNumber: exampleNumber?.formatNational(),
-                focused: true,
-                phoneNumberValid: true
-            });
-            formatter.reset();
+            setState({ exampleNumber: exampleNumber?.formatNational(), focused: true });
+            formatterRef.current = new AsYouType(countryCode);
+            formatterRef.current.reset();
             inputRef.current?.focus();
         }
     }, [state.country]);
 
-    const handleChange = (input: string) => {
-        // Workaround for an AsYouType issue: if the user tries to delete the ')' with the backspace key, AsYouType puts it back.
-        const phoneNumber = formatter.input(
-            (input.length < state.phoneNumber.length && state.phoneNumber.endsWith(')')) ?
+    const handleAsYouType = (input: string) => {
+        formatterRef.current.reset();
+        /**
+         * This is a workaround for an AsYouType quirk where, if a user attempts to delete the closing parenthesis using backspace, 
+         * the formatter re-inserts it.
+         */
+        const displayValue = formatterRef.current.input(
+            (input.length < state.displayValue.length && state.displayValue.endsWith(')')) ?
                 input.slice(0, -1) :
                 input
         );
-        setState({ phoneNumber, phoneNumberValid: true, focused: true });
-        inputProps?.onChangeText && inputProps.onChangeText(phoneNumber);
+        setState({ displayValue, phoneNumberValid: true, focused: !!displayValue });
+        onChangeValue?.(formatterRef.current.getNumber());
+        onChangeText?.(displayValue);
     }
 
     const handleBlur = (e: any) => {
-        const numberValue = formatter.getNumberValue();
-        const phoneNumberValid = numberValue && isValidPhoneNumber(numberValue);
+        const e164Number = formatterRef.current.getNumberValue();
+        const phoneNumberValid = e164Number && isValidPhoneNumber(e164Number);
         setState({ focused: false, phoneNumberValid });
-        onValidate(numberValue);
-        inputProps?.onBlur && inputProps.onBlur(e);
+        onBlur?.(e);
     }
 
     const CountrySelectorContainer = CountrySelectorWrapper || SafeAreaView;
@@ -193,13 +223,13 @@ export default function PhoneInput({
                         styles.inputText.color
                     }
                     {...inputProps}
-                    style={[styles.inputText, inputProps?.style]}
+                    style={[styles.inputText, style]}
                     ref={inputRef}
                     keyboardType="phone-pad"
-                    value={state.phoneNumber}
+                    value={state.displayValue}
                     maxLength={state.exampleNumber?.length}
                     editable={editable && !!state.country}
-                    onChangeText={handleChange}
+                    onChangeText={handleAsYouType}
                     onBlur={handleBlur}
                 />
             </View>
@@ -217,12 +247,8 @@ export default function PhoneInput({
                         theme={appearance}
                         flagRounded={flagRounded}
                         variant="callingCodes"
-                        placeholder={countrySelectorPlaceholder}
-                        onSelected={(country: Country) => setState({
-                            country,
-                            phoneNumber: '',
-                            showCallingCodes: false
-                        })}
+                        placeholder={countryPlaceholder}
+                        onSelected={(country: Country) => setState({ country, showCallingCodes: false })}
                     />
                 </CountrySelectorContainer>
             </Modal>

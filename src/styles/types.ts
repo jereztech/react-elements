@@ -31,6 +31,7 @@ export type Palette = {
     inversePrimary: string;
     outline: string;
     outlineVariant: string;
+    backdrop?: string;
 } & { [addon: string]: string; };
 
 export type Typescale = 'display' | 'headline' | 'title' | 'body' | 'label';

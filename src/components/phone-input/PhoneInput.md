@@ -8,7 +8,8 @@ The `PhoneInput` component allows you to:
 - Specify a fallback country code.
 - Set a locale for country translations.
 - Customize the appearance of the input field and flag icons.
-- Validate and format phone numbers automatically on blur (when the input loses focus).
+- Formats the phone number as the user types.
+- Validate phone numbers automatically on blur (when the input loses focus).
 
 ## Usage Example
 
@@ -20,10 +21,12 @@ import { PhoneInput } from '@jereztech/react-elements';
 export default function App() {
   return (
     <PhoneInput
-        locale={locale}
+        locale='en-US'
+        defaultCountry='US'
         flagRounded
-        onValidate={phoneNumber => setState({ phoneNumber })}
-        onChangeText={phoneNumber => setState({ phoneNumber })}
+        value={state.phoneNumber}
+        onChangeText={phoneNumber => setState({ phoneNumber })} // formatted plain text
+        onChangeValue={phoneNumberObj => setState({ phoneNumberObj })} // Google's Phone Number
         CountrySelectorWrapper={({ children, onDismiss }) => (
             <View style={{ flex: 1 }}>
                 <Header
@@ -53,10 +56,9 @@ The following table outlines the props available for the `PhoneInput` component:
 | `iconProps`           | `Partial<IconProps>`                  | _None_  | Optional props to customize the Icon.                                                                                      |
 | `flagRounded`         | `boolean`                             | `'false'`  | If true, displays the country flags in a circular shape.                                                                   |
 | `flagStyle`           | `StyleProp<ImageStyle>`               | _None_  | Overrides the default style for the flag image.                                                                            |
-| `onValidate`              | `Function => E164Number` | _None_  | Validates and returns the phone number in international format when loses focus. |
 | `inputContainerStyle` | `StyleProp<ViewStyle>`                | _None_  | Overrides the container style for the TextInput.                                                                           |
 | `CountrySelectorWrapper` | `ComponentType<CountrySelectorWrapperProps>`                | `SafeAreaView`  | An optional wrapper component to render inside the Modal for the CountrySelector.                                                                           |
-| `countrySelectorPlaceholder` | `string`                | `'Select a country...'`  | Custom placeholder for the CountrySelector.                                                                           |
+| `countryPlaceholder` | `string`                | `'Select a country...'`  | Custom placeholder for the CountrySelector.                                                                           |
 
 ## Demo
 

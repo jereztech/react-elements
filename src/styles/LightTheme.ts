@@ -28,6 +28,7 @@ export const LightColors: Palette = {
     inversePrimary: Colors.teal,
     outline: '#aaaaaa',
     outlineVariant: '#cac4cf',
+    backdrop: '#333'
 };
 
 export const LightTheme: Theme = {
