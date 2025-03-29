@@ -139,8 +139,8 @@ export default function PhoneInput({
     });
 
     useEffect(() => {
-        if (isPossiblePhoneNumber(value, defaultCountry)) {
-            const phoneNumber = parsePhoneNumberFromString(value, defaultCountry);
+        if (isPossiblePhoneNumber(value)) {
+            const phoneNumber = parsePhoneNumberFromString(value);
             if (phoneNumber) {
                 const countryCode = phoneNumber.country || defaultCountry;
                 setState({
@@ -159,10 +159,9 @@ export default function PhoneInput({
         if (state.country) {
             const countryCode = state.country.code;
             const exampleNumber = getExampleNumber(countryCode, examples);
-            setState({ exampleNumber: exampleNumber?.formatNational(), focused: true });
+            setState({ exampleNumber: exampleNumber?.formatNational() });
             formatterRef.current = new AsYouType(countryCode);
             formatterRef.current.reset();
-            inputRef.current?.focus();
         }
     }, [state.country]);
 
@@ -184,9 +183,22 @@ export default function PhoneInput({
 
     const handleBlur = (e: any) => {
         const e164Number = formatterRef.current.getNumberValue();
-        const phoneNumberValid = e164Number && isValidPhoneNumber(e164Number);
+        const phoneNumberValid = !e164Number || isValidPhoneNumber(e164Number);
         setState({ focused: false, phoneNumberValid });
         onBlur?.(e);
+    }
+
+    const handleClear = () => {
+        const displayValue = '';
+        setState({
+            country: null,
+            exampleNumber: null,
+            displayValue,
+            phoneNumberValid: true,
+            focused: false
+        });
+        onChangeValue?.(undefined);
+        onChangeText?.(displayValue);
     }
 
     const CountrySelectorContainer = CountrySelectorWrapper || SafeAreaView;
@@ -232,6 +244,11 @@ export default function PhoneInput({
                     onChangeText={handleAsYouType}
                     onBlur={handleBlur}
                 />
+                {!!state.country && (
+                    <TouchableOpacity testID="clear-button" onPress={handleClear}>
+                        <Icon name="close" {...iconProps} style={[styles.inputIcon, iconProps?.style]} />
+                    </TouchableOpacity>
+                )}
             </View>
             <Modal
                 visible={state.showCallingCodes}
