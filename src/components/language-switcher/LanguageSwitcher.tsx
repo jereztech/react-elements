@@ -85,7 +85,6 @@ export default function LanguageSwitcher({
     placeholder = 'Select a language...',
     autocompleteStyle,
     inputContainerStyle,
-    iconProps,
     listProps,
     listItemStyle,
     languageStyle,
@@ -156,7 +155,6 @@ export default function LanguageSwitcher({
             fetchItems={filterLanguages}
             autocompleteStyle={autocompleteStyle}
             inputContainerStyle={inputContainerStyle}
-            iconProps={iconProps}
             listProps={listProps}
             {...inputProps}
             renderItem={({ item: language }) => (

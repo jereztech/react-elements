@@ -1,6 +1,6 @@
 
 // Useful for unmasking phone or identification numbers.
-export const unmaskNumber = (value: string) => value?.replace(/\D/g, '');
+export const unmaskNumber = (value: string) => value.replace(/\D/g, '');
 
 /**
  * Mask a phone number by keeping the first 3 digits, the last 2 digits, 

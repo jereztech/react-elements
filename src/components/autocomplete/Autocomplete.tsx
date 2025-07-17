@@ -10,8 +10,10 @@ import {
     View,
     ViewStyle
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { IconProps } from 'react-native-vector-icons/Icon';
+
+import { faClose, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { Subject, from, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { useMutableState } from '../../hooks';
@@ -40,10 +42,6 @@ export interface AutocompleteComponentProps<T> extends TextInputProps {
      * Overrides the FlatList props.
      */
     listProps?: Partial<FlatListProps<T>>;
-    /**
-     * Overrides the Icon props.
-     */
-    iconProps?: Partial<IconProps>;
 }
 
 interface AutocompleteProps<T> extends AutocompleteComponentProps<T> {
@@ -80,7 +78,6 @@ export default function Autocomplete<T>({
     placeholder = 'Type to search...',
     autocompleteStyle,
     inputContainerStyle,
-    iconProps,
     listProps,
     ...inputProps
 }: AutocompleteProps<T>) {
@@ -129,7 +126,7 @@ export default function Autocomplete<T>({
     return (
         <View style={[styles.container, autocompleteStyle]}>
             <View style={[styles.inputContainer, inputContainerStyle]}>
-                <Icon name="search" {...iconProps} style={[styles.inputIcon, iconProps?.style]} />
+                <FontAwesomeIcon icon={faSearch} style={styles.inputIcon} />
                 <TextInput
                     placeholder={placeholder}
                     placeholderTextColor={theme.colors.onSurfaceVariant}
@@ -146,7 +143,7 @@ export default function Autocomplete<T>({
                 />
                 {!!state.filter.length && (
                     <TouchableOpacity testID="clear-button" onPress={handleClear}>
-                        <Icon name="close" {...iconProps} style={[styles.inputIcon, iconProps?.style]} />
+                        <FontAwesomeIcon icon={faClose} style={styles.inputIcon} />
                     </TouchableOpacity>
                 )}
             </View>

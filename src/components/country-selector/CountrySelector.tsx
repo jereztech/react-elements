@@ -65,7 +65,6 @@ export default function CountrySelector({
     placeholder = 'Select a country...',
     autocompleteStyle,
     inputContainerStyle,
-    iconProps,
     listProps,
     listItemStyle,
     countryStyle,
@@ -113,7 +112,6 @@ export default function CountrySelector({
             fetchItems={filterCountries}
             autocompleteStyle={autocompleteStyle}
             inputContainerStyle={inputContainerStyle}
-            iconProps={iconProps}
             listProps={listProps}
             {...inputProps}
             renderItem={({ item: country }) => (

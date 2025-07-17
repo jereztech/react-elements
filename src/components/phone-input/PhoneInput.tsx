@@ -23,8 +23,10 @@ import {
     View,
     ViewStyle
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { IconProps } from 'react-native-vector-icons/Icon';
+
+import { faClose, faPhone } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { useMutableState } from '../../hooks';
 import { useStyles, useTheme } from '../../styles';
 import { DEFAULT_COUNTRY, DEFAULT_LOCALE, FLAGS_URI } from '../../utils';
@@ -54,10 +56,6 @@ interface PhoneInputProps extends TextInputProps {
      * If false, disable TextInput.
      */
     editable?: boolean;
-    /**
-     * Optional props for the Icon.
-     */
-    iconProps?: Partial<IconProps>;
     /**
      * If true, the country flags will be displayed in a circle shape.
      */
@@ -108,7 +106,6 @@ export default function PhoneInput({
     locale = DEFAULT_LOCALE,
     placeholder = 'Phone Number',
     editable = true,
-    iconProps,
     flagStyle,
     flagRounded = false,
     inputContainerStyle,
@@ -225,7 +222,7 @@ export default function PhoneInput({
                                 +{state.country.callingCode}
                             </Text>
                         </View> :
-                        <Icon name="phone" {...iconProps} style={[styles.inputIcon, iconProps?.style]} />
+                        <FontAwesomeIcon icon={faPhone} style={styles.inputIcon} />
                     }
                 </TouchableOpacity>
                 <TextInput
@@ -246,7 +243,7 @@ export default function PhoneInput({
                 />
                 {!!state.country && (
                     <TouchableOpacity testID="clear-button" onPress={handleClear}>
-                        <Icon name="close" {...iconProps} style={[styles.inputIcon, iconProps?.style]} />
+                        <FontAwesomeIcon icon={faClose} style={styles.inputIcon} />
                     </TouchableOpacity>
                 )}
             </View>
