@@ -24,13 +24,11 @@ import {
     ViewStyle
 } from 'react-native';
 
-import { faClose, faPhone } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { useMutableState } from '../../hooks';
 import { useStyles, useTheme } from '../../styles';
 import { DEFAULT_COUNTRY, DEFAULT_LOCALE, FLAGS_URI } from '../../utils';
 import CountrySelector, { Country } from '../country-selector/CountrySelector';
+import { CloseIcon, PhoneIcon } from '../icons';
 
 interface CountrySelectorWrapperProps extends PropsWithChildren {
     /**
@@ -210,6 +208,7 @@ export default function PhoneInput({
             ]}>
                 <TouchableOpacity
                     disabled={!editable}
+                    style={styles.touchableOpacity}
                     onPress={() => setState({ showCallingCodes: true })}
                 >
                     {state.country ?
@@ -222,7 +221,7 @@ export default function PhoneInput({
                                 +{state.country.callingCode}
                             </Text>
                         </View> :
-                        <FontAwesomeIcon icon={faPhone} style={styles.inputIcon} />
+                        <PhoneIcon style={styles.inputIcon} />
                     }
                 </TouchableOpacity>
                 <TextInput
@@ -242,8 +241,8 @@ export default function PhoneInput({
                     onBlur={handleBlur}
                 />
                 {!!state.country && (
-                    <TouchableOpacity testID="clear-button" onPress={handleClear}>
-                        <FontAwesomeIcon icon={faClose} style={styles.inputIcon} />
+                    <TouchableOpacity testID="clear-button" style={styles.touchableOpacity} onPress={handleClear}>
+                        <CloseIcon style={styles.inputIcon} />
                     </TouchableOpacity>
                 )}
             </View>

@@ -11,14 +11,12 @@ import {
     ViewStyle
 } from 'react-native';
 
-import { faClose, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { Subject, from, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { useMutableState } from '../../hooks';
 import { useStyles, useTheme } from '../../styles';
 import { isEmpty } from '../../utils';
+import { CloseIcon, SearchIcon } from '../icons';
 
 export type AutocompleteItem<T> = {
     item: T;
@@ -126,7 +124,7 @@ export default function Autocomplete<T>({
     return (
         <View style={[styles.container, autocompleteStyle]}>
             <View style={[styles.inputContainer, inputContainerStyle]}>
-                <FontAwesomeIcon icon={faSearch} style={styles.inputIcon} />
+                <SearchIcon style={styles.inputIcon} />
                 <TextInput
                     placeholder={placeholder}
                     placeholderTextColor={theme.colors.onSurfaceVariant}
@@ -143,7 +141,7 @@ export default function Autocomplete<T>({
                 />
                 {!!state.filter.length && (
                     <TouchableOpacity testID="clear-button" onPress={handleClear}>
-                        <FontAwesomeIcon icon={faClose} style={styles.inputIcon} />
+                        <CloseIcon style={styles.inputIcon} />
                     </TouchableOpacity>
                 )}
             </View>

@@ -40,6 +40,8 @@ export const createStyles = ({ colors, typography, roundness, spacing }: Theme) 
         paddingLeft: 10,
         fontSize: typography.title.small.fontSize,
         color: colors.onTertiaryContainer,
+        outlineWidth: 0,
+        outlineColor: 'transparent',
     },
     inputIcon: {
         marginHorizontal: spacing,
@@ -78,5 +80,9 @@ export const createStyles = ({ colors, typography, roundness, spacing }: Theme) 
         width: 30,
         height: 30,
         borderRadius: 35,
+    },
+    touchableOpacity: {
+        outlineWidth: 0,
+        outlineColor: 'transparent',
     },
 });
