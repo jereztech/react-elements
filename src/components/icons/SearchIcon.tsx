@@ -1,9 +1,6 @@
-import { StyleProp, Text, TextStyle } from "react-native";
+import { Text } from 'react-native';
+import type { IconProps } from './types';
 
-interface SearchIconProps {
-    style: StyleProp<TextStyle>;
-}
-
-export function SearchIcon({ style }: SearchIconProps) {
+export function SearchIcon({ style }: IconProps) {
     return <Text style={style}>🔍</Text>;
 }

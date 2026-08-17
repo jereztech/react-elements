@@ -8,7 +8,7 @@ import parsePhoneNumberFromString, {
 } from 'libphonenumber-js';
 
 import examples from 'libphonenumber-js/mobile/examples';
-import { ComponentType, PropsWithChildren, useEffect, useRef } from 'react';
+import { ComponentType, PropsWithChildren, ReactNode, useEffect, useRef } from 'react';
 import {
     ColorSchemeName,
     Image,
@@ -26,9 +26,10 @@ import {
 
 import { useMutableState } from '../../hooks';
 import { useStyles, useTheme } from '../../styles';
-import { DEFAULT_COUNTRY, DEFAULT_LOCALE, FLAGS_URI } from '../../utils';
+import { DEFAULT_COUNTRY, DEFAULT_LOCALE } from '../../utils';
 import CountrySelector, { Country } from '../country-selector/CountrySelector';
 import { CloseIcon, PhoneIcon } from '../icons';
+import { toCountry } from './PhoneInput.utils';
 
 interface CountrySelectorWrapperProps extends PropsWithChildren {
     /**
@@ -43,7 +44,7 @@ interface PhoneInputProps extends TextInputProps {
      */
     theme?: ColorSchemeName;
     /**
-     * The fallback CountryCode.
+     * The CountryCode preselected on mount, until the user picks another one.
      */
     defaultCountry?: CountryCode;
     /**
@@ -87,6 +88,33 @@ interface PhoneInputProps extends TextInputProps {
      * Returns the phone number in `PhoneNumber` format.
      */
     onChangeValue?: (phoneNumber?: PhoneNumber) => void;
+    /**
+     * Render prop to replace the default input container with a custom component.
+     * Receives all internal state and handlers needed to build the phone input UI.
+     */
+    renderInput?: (props: RenderPhoneInputProps) => ReactNode;
+}
+
+export interface RenderPhoneInputProps {
+    /** The formatted display value (e.g. "(555) 123-4567") */
+    value: string;
+    /** Effective placeholder — example number when country is set, otherwise `placeholder` prop */
+    placeholder: string;
+    /** True only when a country has been selected */
+    editable: boolean;
+    /** Max character length derived from the country's example number */
+    maxLength?: number;
+    /** Currently selected country, or null */
+    country: Country | null;
+    /** False when the entered number fails E.164 validation on blur */
+    isValid: boolean;
+    isFocused: boolean;
+    onChangeText: (text: string) => void;
+    onBlur: (e: any) => void;
+    /** Opens the country selector modal */
+    onFlagPress: () => void;
+    /** Clears the selected country and phone number */
+    onClear: () => void;
 }
 
 type PhoneInputState = {
@@ -100,7 +128,7 @@ type PhoneInputState = {
 
 export default function PhoneInput({
     theme: appearance,
-    defaultCountry = DEFAULT_COUNTRY,
+    defaultCountry,
     locale = DEFAULT_LOCALE,
     placeholder = 'Phone Number',
     editable = true,
@@ -115,14 +143,15 @@ export default function PhoneInput({
     onChangeValue,
     onChangeText,
     onBlur,
+    renderInput,
     ...inputProps
 }: PhoneInputProps) {
 
     const styles = useStyles(appearance);
     const theme = useTheme(appearance);
 
-    const formatterRef = useRef<AsYouType>(new AsYouType(defaultCountry));
-    const inputRef = useRef<TextInput>(null);
+    const formatterRef = useRef<AsYouType>(new AsYouType(defaultCountry ?? DEFAULT_COUNTRY));
+    const countryTouchedRef = useRef(false);
 
     const [state, setState] = useMutableState<PhoneInputState>({
         country: null,
@@ -137,35 +166,32 @@ export default function PhoneInput({
         if (isPossiblePhoneNumber(value)) {
             const phoneNumber = parsePhoneNumberFromString(value);
             if (phoneNumber) {
-                const countryCode = phoneNumber.country || defaultCountry;
+                const countryCode = phoneNumber.country || defaultCountry || DEFAULT_COUNTRY;
                 setState({
-                    country: {
-                        code: countryCode,
-                        callingCode: phoneNumber.countryCallingCode,
-                        flagUri: `${FLAGS_URI}/${countryCode.toLowerCase()}.png`
-                    } as Country,
+                    country: toCountry(countryCode, phoneNumber.countryCallingCode),
                     displayValue: phoneNumber.formatNational()
                 });
             }
+            return;
         }
-    }, [value]);
+        if (defaultCountry && !countryTouchedRef.current) {
+            setState({ country: toCountry(defaultCountry) });
+        }
+    }, [value, defaultCountry, setState]);
 
     useEffect(() => {
         if (state.country) {
             const countryCode = state.country.code;
             const exampleNumber = getExampleNumber(countryCode, examples);
-            setState({ exampleNumber: exampleNumber?.formatNational() });
+            setState({ exampleNumber: exampleNumber?.formatNational() ?? null });
             formatterRef.current = new AsYouType(countryCode);
-            formatterRef.current.reset();
         }
-    }, [state.country]);
+    }, [state.country, setState]);
 
     const handleAsYouType = (input: string) => {
         formatterRef.current.reset();
-        /**
-         * This is a workaround for an AsYouType quirk where, if a user attempts to delete the closing parenthesis using backspace, 
-         * the formatter re-inserts it.
-         */
+        // Workaround for an AsYouType quirk: deleting the closing parenthesis with
+        // backspace makes the formatter re-insert it, so drop one more character.
         const displayValue = formatterRef.current.input(
             (input.length < state.displayValue.length && state.displayValue.endsWith(')')) ?
                 input.slice(0, -1) :
@@ -183,8 +209,14 @@ export default function PhoneInput({
         onBlur?.(e);
     }
 
+    const handleSelectCountry = (country: Country) => {
+        countryTouchedRef.current = true;
+        setState({ country, showCallingCodes: false });
+    }
+
     const handleClear = () => {
         const displayValue = '';
+        countryTouchedRef.current = true;
         setState({
             country: null,
             exampleNumber: null,
@@ -197,6 +229,49 @@ export default function PhoneInput({
     }
 
     const CountrySelectorContainer = CountrySelectorWrapper || SafeAreaView;
+
+    const countrySelectorModal = (
+        <Modal
+            visible={state.showCallingCodes}
+            animationType="slide"
+            style={[{ backgroundColor: theme.colors.surface }, modalStyle]}
+        >
+            <CountrySelectorContainer
+                style={styles.container}
+                onDismiss={() => setState({ showCallingCodes: false })}
+            >
+                <CountrySelector
+                    locale={locale}
+                    theme={appearance}
+                    flagRounded={flagRounded}
+                    variant="callingCodes"
+                    placeholder={countryPlaceholder}
+                    onSelected={handleSelectCountry}
+                />
+            </CountrySelectorContainer>
+        </Modal>
+    );
+
+    if (renderInput) {
+        return (
+            <>
+                {renderInput({
+                    value: state.displayValue,
+                    placeholder: state.exampleNumber || placeholder,
+                    editable: editable && !!state.country,
+                    maxLength: state.exampleNumber?.length,
+                    country: state.country,
+                    isValid: state.phoneNumberValid,
+                    isFocused: state.focused,
+                    onChangeText: handleAsYouType,
+                    onBlur: handleBlur,
+                    onFlagPress: () => setState({ showCallingCodes: true }),
+                    onClear: handleClear,
+                })}
+                {countrySelectorModal}
+            </>
+        );
+    }
 
     return (
         <View>
@@ -232,7 +307,6 @@ export default function PhoneInput({
                     }
                     {...inputProps}
                     style={[styles.inputText, style]}
-                    ref={inputRef}
                     keyboardType="phone-pad"
                     value={state.displayValue}
                     maxLength={state.exampleNumber?.length}
@@ -246,25 +320,7 @@ export default function PhoneInput({
                     </TouchableOpacity>
                 )}
             </View>
-            <Modal
-                visible={state.showCallingCodes}
-                animationType="slide"
-                style={[{ backgroundColor: theme.colors.surface }, modalStyle]}
-            >
-                <CountrySelectorContainer
-                    style={styles.container}
-                    onDismiss={() => setState({ showCallingCodes: false })}
-                >
-                    <CountrySelector
-                        locale={locale}
-                        theme={appearance}
-                        flagRounded={flagRounded}
-                        variant="callingCodes"
-                        placeholder={countryPlaceholder}
-                        onSelected={(country: Country) => setState({ country, showCallingCodes: false })}
-                    />
-                </CountrySelectorContainer>
-            </Modal>
+            {countrySelectorModal}
         </View>
     );
-};
+}

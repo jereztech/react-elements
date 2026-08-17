@@ -1,9 +1,9 @@
 import { CountryCallingCode, CountryCode, getCountries, getCountryCallingCode } from 'libphonenumber-js';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, ImageStyle, StyleProp, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { useStyles } from '../../styles';
 import { COUNTRIES_URI, DEFAULT_LOCALE, FLAGS_URI, isEmpty, stripAccents } from '../../utils';
-import Autocomplete, { AutocompleteComponentProps } from '../autocomplete/Autocomplete';
+import Autocomplete, { AutocompleteInputProps } from '../autocomplete/Autocomplete';
 
 type CountrySelectorVariant = 'countries' | 'callingCodes';
 
@@ -19,7 +19,7 @@ export type Country = {
     flagUri: string;
 }
 
-interface CountrySelectorProps extends AutocompleteComponentProps<Country> {
+interface CountrySelectorProps extends AutocompleteInputProps<Country> {
     /**
      * When provided, only the countries with these codes (ISO 3166) are shown.
      */
@@ -77,33 +77,50 @@ export default function CountrySelector({
 
     const isCallingCodes = variant === 'callingCodes';
 
+    const countryCodesKey = countryCodes.join(',');
+
     const loadCountries = useCallback(async () => {
-        const data = await fetch(`${COUNTRIES_URI}/${locale.replace('-', '_')}.json`)
-            .then(response => response.json())
-            .catch(console.error);
-        const countries = data
-            .filter(({ alpha2Code }: CountryPayload) => countryCodes.includes(alpha2Code))
-            .map(({ alpha2Code: code, country: name }: CountryPayload) => ({
-                code,
-                name,
-                callingCode: getCountryCallingCode(code as CountryCode),
-                flagUri: `${FLAGS_URI}/${code.toLowerCase()}.png`
-            } as Country));
-        setCountries(countries);
-    }, [locale]);
+        try {
+            const response = await fetch(`${COUNTRIES_URI}/${locale.replace('-', '_')}.json`);
+            if (!response.ok) {
+                throw new Error(`${response.status} ${response.statusText}`);
+            }
+            const payload: CountryPayload[] = await response.json();
+            const allowedCodes = new Set(countryCodesKey.split(','));
+            const dialableCodes = new Set<string>(getCountries());
+            setCountries(payload
+                .filter(({ alpha2Code }) => allowedCodes.has(alpha2Code))
+                .map(({ alpha2Code, country }) => ({
+                    code: alpha2Code as CountryCode,
+                    name: country,
+                    callingCode: dialableCodes.has(alpha2Code) ?
+                        getCountryCallingCode(alpha2Code as CountryCode) :
+                        undefined,
+                    flagUri: `${FLAGS_URI}/${alpha2Code.toLowerCase()}.png`
+                }))
+            );
+        } catch (error) {
+            console.error('Error fetching countries:', error);
+            setCountries([]);
+        }
+    }, [locale, countryCodesKey]);
 
     useEffect(() => {
         loadCountries();
-    }, [locale, loadCountries]);
+    }, [loadCountries]);
 
-    const filterCountries = async (filter = ''): Promise<Country[]> => {
+    const selectableCountries = useMemo(
+        () => isCallingCodes ? countries.filter(({ callingCode }) => !!callingCode) : countries,
+        [countries, isCallingCodes]
+    );
+
+    const filterCountries = useCallback(async (filter = ''): Promise<Country[]> => {
         if (isEmpty(filter)) {
-            return countries;
+            return selectableCountries;
         }
-        return countries.filter(({ name }) => stripAccents(name.toLowerCase())
-            .includes(stripAccents(filter.trim().toLowerCase()))
-        );
-    };
+        const normalizedFilter = stripAccents(filter.trim().toLowerCase());
+        return selectableCountries.filter(({ name }) => stripAccents(name.toLowerCase()).includes(normalizedFilter));
+    }, [selectableCountries]);
 
     return (
         <Autocomplete<Country>

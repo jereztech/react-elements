@@ -1,9 +1,6 @@
-import { StyleProp, Text, TextStyle } from "react-native";
+import { Text } from 'react-native';
+import type { IconProps } from './types';
 
-interface CloseIconProps {
-    style: StyleProp<TextStyle>;
-}
-
-export function CloseIcon({ style }: CloseIconProps) {
+export function CloseIcon({ style }: IconProps) {
     return <Text style={style}>✕</Text>;
 }

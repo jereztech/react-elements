@@ -1,21 +1,12 @@
-import { useCallback } from "react";
 import { ColorSchemeName } from "react-native";
 import { useThemeContext } from "./ThemeProvider";
 import type { Theme } from "./types";
 
 /**
- * This dynamic hook was created with the hope of being able to change the styles of an individual component without changing the entire context. 
- * Ex: light button on a dark CTA in a light style context or to force 'light' if 'dark' is not supported.
- * 
- * @param colorScheme 
+ * Returns the active theme, or the theme for `colorScheme` when given.
+ * Useful to pin a single component to a scheme (e.g. a dark CTA inside a light screen).
  */
 export default function useTheme(colorScheme?: ColorSchemeName): Theme {
-
     const { currentTheme, getAppearance } = useThemeContext();
-
-    const getTheme = useCallback(() => {
-        return !!colorScheme ? getAppearance(colorScheme) : currentTheme;
-    }, [colorScheme, currentTheme]);
-
-    return getTheme();
+    return colorScheme ? getAppearance(colorScheme) : currentTheme;
 }

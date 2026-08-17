@@ -1,9 +1,6 @@
-import { StyleProp, Text, TextStyle } from "react-native";
+import { Text } from 'react-native';
+import type { IconProps } from './types';
 
-interface PhoneIconProps {
-    style: StyleProp<TextStyle>;
-}
-
-export function PhoneIcon({ style }: PhoneIconProps) {
+export function PhoneIcon({ style }: IconProps) {
     return <Text style={style}>📞</Text>;
 }

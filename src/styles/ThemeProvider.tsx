@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
+import { createContext, PropsWithChildren, useCallback, useContext, useMemo } from "react";
 import { ColorSchemeName, useColorScheme } from "react-native";
 import { DarkTheme } from "./DarkTheme";
 import { LightTheme } from "./LightTheme";
@@ -14,29 +14,40 @@ type ThemeContextProps = {
     getAppearance: (colorScheme?: ColorSchemeName) => Theme;
 }
 
-const ThemeContext = createContext<ThemeContextProps>({
-    currentTheme: LightTheme,
-    getAppearance: () => LightTheme
-});
+const ThemeContext = createContext<ThemeContextProps | null>(null);
 
-export const useThemeContext = () => useContext(ThemeContext);
+const getDefaultAppearance = (colorScheme?: ColorSchemeName): Theme =>
+    colorScheme === 'dark' ? DarkTheme : LightTheme;
+
+/**
+ * Falls back to the built-in themes driven by the system color scheme
+ * when the tree is not wrapped in a `ThemeProvider`.
+ */
+export const useThemeContext = (): ThemeContextProps => {
+    const context = useContext(ThemeContext);
+    const colorScheme = useColorScheme();
+    return context ?? {
+        currentTheme: getDefaultAppearance(colorScheme),
+        getAppearance: getDefaultAppearance
+    };
+};
 
 export default function ThemeProvider({ lightTheme = LightTheme, darkTheme = DarkTheme, children }: ThemeProviderProps) {
 
-    const getAppearance = (colorScheme?: ColorSchemeName): Theme => colorScheme === 'dark' ? darkTheme : lightTheme;
-
     const colorScheme = useColorScheme();
 
-    const [currentTheme, setCurrentTheme] = useState<Theme>(() => getAppearance(colorScheme));
+    const getAppearance = useCallback(
+        (scheme?: ColorSchemeName): Theme => scheme === 'dark' ? darkTheme : lightTheme,
+        [lightTheme, darkTheme]
+    );
 
-    useEffect(() => {
-        if (colorScheme !== currentTheme.schemeName) {
-            setCurrentTheme(() => getAppearance(colorScheme));
-        }
-    }, [colorScheme]);
+    const value = useMemo(
+        () => ({ currentTheme: getAppearance(colorScheme), getAppearance }),
+        [colorScheme, getAppearance]
+    );
 
     return (
-        <ThemeContext.Provider value={{ currentTheme, getAppearance }}>
+        <ThemeContext.Provider value={value}>
             {children}
         </ThemeContext.Provider>
     );

@@ -4,7 +4,7 @@ The `LanguageSwitcher` component is a customizable autocomplete component for se
 
 ## Overview
 
-`LanguageSwitcher` extends the `AutocompleteComponentProps<Language>` interface and adds language-specific properties. It provides:
+`LanguageSwitcher` extends the `AutocompleteInputProps<Language>` interface and adds language-specific properties. It provides:
 
 - Support for filtering languages by supported locales.
 - Options to display language names in their native or localized form.
@@ -40,24 +40,28 @@ The following table outlines the props for `LanguageSwitcher` and explains each 
 | Field               | Type                                | Default                      | Description                                                                                          |
 |---------------------|-------------------------------------|------------------------------|------------------------------------------------------------------------------------------------------|
 | `supportedLocales`  | `string[]`                          | _None_                       | The supported locales. Only languages matching these locales will be displayed.                     |
-| `locale`            | `string`                            | `'en-US'`                    | Locale for country translations and for displaying language names.                                   |
+| `locale`            | `string`                            | `'en-US'`                    | Locale used to fetch the localized language names (`localized` variant only).                        |
 | `variant`           | `'native'` \| `'localized'`           | `'native'`                   | The LanguageSwitcher variant determines whether to display native or localized language names.       |
 | `onSelected`        | `(language: Language) => void`      | _None_                       | Callback function triggered when a language is selected. Receives the selected `Language` object.    |
+| `selectedLocale`    | `string`                            | _None_                       | The currently selected locale, forwarded to `renderItem` as `isSelected`.                            |
 | `flagStyle`         | `StyleProp<ImageStyle>`             | _None_                       | Overrides the style for the flag image.                                                              |
 | `flagRounded`       | `boolean`                           | `false`                       | If true, the flag will be displayed with a circular shape.                                           |
-| `listItemStyle`     | `StyleProp<ViewStyle>`              | _None_                       | Overrides the container style for each list item.                                                  |
-| `languageStyle`     | `StyleProp<TextStyle>`              | _None_                       | Overrides the text style for displaying the language name.                                         |
+| `listItemStyle`     | `StyleProp<ViewStyle>`              | _None_                       | Overrides the container style for each list item (default renderer).                                |
+| `languageStyle`     | `StyleProp<TextStyle>`              | _None_                       | Overrides the text style for displaying the language name (default renderer).                       |
+| `renderItem`        | `({ language, isSelected }) => ReactElement` | _None_              | Custom renderer for each language item, replacing the default row.                                  |
 
-### AutocompleteComponentProps (Inherited)
+### AutocompleteInputProps (Inherited)
 
 | Field                  | Type                           | Default                  | Description                                                         |
 |------------------------|--------------------------------|--------------------------|---------------------------------------------------------------------|
 | `theme`                | `ColorSchemeName`              | `'light'`                | The user's preferred color scheme (e.g. Dark Mode).                 |
 | `placeholder`          | `string`                       | `'Select a language...'` | Placeholder text for the TextInput.                                 |
 | `autocompleteStyle`    | `StyleProp<ViewStyle>`         | _None_                   | Overrides the Autocomplete container style.                         |
-| `inputContainerStyle`  | `StyleProp<ViewStyle>`         | _None_                   | Overrides the TextInput container style.                            |
+| `inputContainerStyle`  | `StyleProp<ViewStyle>`         | _None_                   | Overrides the input row container style.                            |
 | `listProps`            | `Partial<FlatListProps<T>>`    | _None_                   | Overrides the default FlatList props.                               |
-| `iconProps`            | `Partial<IconProps>`           | _None_                   | Overrides the default Icon props.                                   |
+| `leftIcon` / `rightIcon` | `ReactElement \| null`       | `null`                   | Elements rendered on either side of the input.                      |
+
+See [Autocomplete](../autocomplete/Autocomplete.md) for the full list.
 
 ## Demo
 

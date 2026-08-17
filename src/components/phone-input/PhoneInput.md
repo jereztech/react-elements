@@ -5,7 +5,7 @@ The `PhoneInput` component provides a user-friendly interface for entering and v
 ## Overview
 
 The `PhoneInput` component allows you to:
-- Specify a fallback country code.
+- Preselect a country code.
 - Set a locale for country translations.
 - Customize the appearance of the input field and flag icons.
 - Formats the phone number as the user types.
@@ -49,16 +49,24 @@ The following table outlines the props available for the `PhoneInput` component:
 | Field                 | Type                                  | Default | Description                                                                                                                  |
 |-----------------------|---------------------------------------|---------|------------------------------------------------------------------------------------------------------------------------------|
 | `theme`               | `ColorSchemeName`                     | `'light'`  | The user's preferred color scheme (e.g. Dark Mode).                                                                         |
-| `defaultCountry`      | `CountryCode`                         | `'US'`  | The fallback CountryCode used when no country is selected.                                                                  |
+| `defaultCountry`      | `CountryCode`                         | _None_  | The CountryCode preselected on mount, until the user picks another one. When omitted, no country is preselected.             |
 | `locale`              | `string`                              | `'en-US'`  | Locale for country translations.                                                                                           |
 | `placeholder`         | `string`                              | `'Phone Number'`  | Placeholder text for the TextInput.                                                                                        |
-| `editable`            | `boolean`                             | `'true'`  | If false, disables the TextInput.                                                                                          |
-| `iconProps`           | `Partial<IconProps>`                  | _None_  | Optional props to customize the Icon.                                                                                      |
-| `flagRounded`         | `boolean`                             | `'false'`  | If true, displays the country flags in a circular shape.                                                                   |
+| `editable`            | `boolean`                             | `true`  | If false, disables the TextInput. The input is also disabled until a country is selected.                                     |
+| `flagRounded`         | `boolean`                             | `false`  | If true, displays the country flags in a circular shape.                                                                   |
 | `flagStyle`           | `StyleProp<ImageStyle>`               | _None_  | Overrides the default style for the flag image.                                                                            |
 | `inputContainerStyle` | `StyleProp<ViewStyle>`                | _None_  | Overrides the container style for the TextInput.                                                                           |
+| `modalStyle`          | `StyleProp<ViewStyle>`                | _None_  | Overrides the CountrySelector Modal container style.                                                                       |
 | `CountrySelectorWrapper` | `ComponentType<CountrySelectorWrapperProps>`                | `SafeAreaView`  | An optional wrapper component to render inside the Modal for the CountrySelector.                                                                           |
 | `countryPlaceholder` | `string`                | `'Select a country...'`  | Custom placeholder for the CountrySelector.                                                                           |
+| `value`               | `string`                              | `''`    | Controlled phone number. When it parses as a possible number, the country and formatting are derived from it.                |
+| `onChangeText`        | `(value: string) => void`             | _None_  | Called with the formatted display value on every change.                                                                    |
+| `onChangeValue`       | `(phoneNumber?: PhoneNumber) => void` | _None_  | Called with libphonenumber's `PhoneNumber` on every change, or `undefined` when cleared.                                     |
+| `renderInput`         | `(props: RenderPhoneInputProps) => ReactNode` | _None_ | Replaces the default input row with your own UI. Receives the state and handlers listed below.                          |
+
+### RenderPhoneInputProps
+
+Passed to `renderInput`: `value`, `placeholder`, `editable`, `maxLength`, `country`, `isValid`, `isFocused`, `onChangeText`, `onBlur`, `onFlagPress` (opens the country selector) and `onClear`.
 
 ## Demo
 

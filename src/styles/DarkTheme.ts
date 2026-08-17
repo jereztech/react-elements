@@ -1,21 +1,35 @@
-import { LightColors, LightTheme } from "./LightTheme";
+import { Colors } from "./Colors";
+import { LightTheme } from "./LightTheme";
 import type { Palette, Theme } from "./types";
 import { createTypography } from "./Typography";
 
 export const DarkColors: Palette = {
-    ...LightColors,
-    secondaryContainer: '#1d1f06',
-    onSecondaryContainer: '#bbbaa6',
-    tertiaryContainer: '#0e130c',
-    onTertiaryContainer: '#b4b7af',
-    surface: '#141314',
-    surfaceContainer: '#211f21',
-    onSurface: '#e3e3e3',
-    onSurfaceVariant: '#454558',
-    inverseSurface: '#e6e1e5',
-    inverseOnSurface: '#313033',
-    outline: '#938f99',
-    outlineVariant: '#49454f',
+    primary: Colors.primary400,
+    onPrimary: Colors.gray950,
+    primaryContainer: Colors.primary900,
+    onPrimaryContainer: Colors.primary100,
+    secondary: Colors.gray300,
+    onSecondary: Colors.gray950,
+    secondaryContainer: Colors.gray800,
+    onSecondaryContainer: Colors.gray100,
+    tertiary: Colors.gray400,
+    onTertiary: Colors.gray950,
+    tertiaryContainer: Colors.gray900,
+    onTertiaryContainer: Colors.gray100,
+    error: Colors.error400,
+    onError: Colors.gray950,
+    errorContainer: Colors.error900,
+    onErrorContainer: Colors.error100,
+    surface: Colors.gray950,
+    surfaceContainer: Colors.gray900,
+    onSurface: Colors.gray100,
+    onSurfaceVariant: Colors.gray400,
+    inverseSurface: Colors.gray100,
+    inverseOnSurface: Colors.gray900,
+    inversePrimary: Colors.primary700,
+    outline: Colors.gray700,
+    outlineVariant: Colors.gray800,
+    backdrop: Colors.gray950
 };
 
 export const DarkTheme: Theme = {

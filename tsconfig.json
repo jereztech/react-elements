@@ -16,16 +16,16 @@
         "lib": [
             "es2023",
             "dom"
-        ],
+        ]
     },
     "include": [
-        "src",
-        "**/*.d.ts",
+        "src"
     ],
     "exclude": [
         "node_modules",
         "dist",
         "src/assets",
-        "**/*.test.{ts|tsx}",
+        "**/*.test.ts",
+        "**/*.test.tsx"
     ]
 }

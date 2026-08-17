@@ -51,18 +51,18 @@ Returns a `Theme` object. If you pass a `colorScheme` argument (`"light"` or `"d
 import { View, Text } from 'react-native';
 import { useTheme } from '@jereztech/react-elements';
 
-const BlackCta = () => {
+const DarkCta = () => {
     // Force this CTA to always use the dark theme
     const theme = useTheme('dark');
 
     return (
-        <View style={{ backgroundColor: theme.colors.background }}>
-            <Button>Press me</Button>
+        <View style={{ backgroundColor: theme.colors.surface }}>
+            <Text style={{ color: theme.colors.onSurface }}>Press me</Text>
         </View>
     );
 };
 
-export default BlackCta;
+export default DarkCta;
 ```
 
 ### `useStyles(colorScheme?: ColorSchemeName)`
@@ -124,6 +124,7 @@ export type Palette = {
     inversePrimary: string;
     outline: string;
     outlineVariant: string;
+    backdrop?: string;
 } & { [addon: string]: string; };
 
 export type Typescale = 'display' | 'headline' | 'title' | 'body' | 'label';
@@ -170,6 +171,9 @@ An autocomplete component for switching languages. It supports two variants—na
 
 ### [PhoneInput](./src/components/phone-input/PhoneInput.md)
 A phone number input component that integrates with Google's libphonenumber library to format and validate phone numbers according to international standards. It supports customizable styles and callback functions for handling phone number validation on blur.
+
+### Icons
+`CloseIcon`, `PhoneIcon` and `SearchIcon` are plain text glyphs (no icon-font dependency). Pass them to `Autocomplete`'s `leftIcon` / `rightIcon`, or use your own elements.
 
 ## License
 

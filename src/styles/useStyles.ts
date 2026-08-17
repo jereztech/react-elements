@@ -1,13 +1,11 @@
 import { useMemo } from "react";
 import { ColorSchemeName } from "react-native";
-import { createStyles } from "./Styles";
+import { createStyles } from "./styles";
 import useTheme from "./useTheme";
 
 /**
- * This dynamic hook was created with the hope of being able to change the styles of an individual component without changing the entire context. 
- * Ex: light button on a dark CTA in a light style context or to force 'light' if 'dark' is not supported.
- * 
- * @param colorScheme 
+ * Returns the shared stylesheet built from the active theme,
+ * or from the theme for `colorScheme` when given.
  */
 export default function useStyles(colorScheme?: ColorSchemeName) {
     const theme = useTheme(colorScheme);

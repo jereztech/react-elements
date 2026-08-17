@@ -4,7 +4,7 @@ The `CountrySelector` component is a specialized autocomplete component for sele
 
 ## Overview
 
-The component extends the `AutocompleteComponentProps<Country>` interface, adding country-specific properties. It allows you to:
+The component extends the `AutocompleteInputProps<Country>` interface, adding country-specific properties. It allows you to:
 
 - Filter the displayed countries by ISO 3166 country codes.
 - Support locale-based country translations.
@@ -37,7 +37,7 @@ The following table describes the props for `CountrySelector`.
 
 | Field               | Type                                                   | Default                   | Description                                                                                       |
 |---------------------|--------------------------------------------------------|---------------------------|---------------------------------------------------------------------------------------------------|
-| `countryCodes`      | `string[]`                                             | _None_                    | When provided, only the countries with these ISO 3166 codes are shown.                            |
+| `countryCodes`      | `string[]`                                             | All dialable countries    | When provided, only the countries with these ISO 3166 codes are shown.                            |
 | `locale`            | `string`                                               | `'en-US'`                    | Locale for country translations.                                                                  |
 | `variant`           | `'countries'` \| `'callingCodes'`                        | `'countries'`                    | The variant of the CountrySelector. Determines whether countries or calling codes are displayed.  |
 | `onSelected`        | `(country: Country) => void`                           | _None_                    | Callback when a country is selected. Receives the selected `Country` as a parameter.              |
@@ -46,16 +46,18 @@ The following table describes the props for `CountrySelector`.
 | `listItemStyle`     | `StyleProp<ViewStyle>`                                 | _None_                    | Overrides the container style for each list item.                                               |
 | `countryStyle`      | `StyleProp<TextStyle>`                                 | _None_                    | Overrides the text style for displaying the country name.                                       |
 
-## AutocompleteComponentProps (Inherited)
+## AutocompleteInputProps (Inherited)
 
 | Field                  | Type                           | Default                  | Description                                                         |
 |------------------------|--------------------------------|--------------------------|---------------------------------------------------------------------|
 | `theme`                | `ColorSchemeName`              | `'light'`                | The user's preferred color scheme (e.g. Dark Mode).                 |
-| `placeholder`          | `string`                       | `'Type to search...'`    | Placeholder text for the TextInput.                                 |
+| `placeholder`          | `string`                       | `'Select a country...'`  | Placeholder text for the TextInput.                                 |
 | `autocompleteStyle`    | `StyleProp<ViewStyle>`         | _None_                   | Overrides the Autocomplete container style.                         |
-| `inputContainerStyle`  | `StyleProp<ViewStyle>`         | _None_                   | Overrides the TextInput container style.                            |
+| `inputContainerStyle`  | `StyleProp<ViewStyle>`         | _None_                   | Overrides the input row container style.                            |
 | `listProps`            | `Partial<FlatListProps<T>>`    | _None_                   | Overrides the default FlatList props.                               |
-| `iconProps`            | `Partial<IconProps>`           | _None_                   | Overrides the default Icon props.                                   |
+| `leftIcon` / `rightIcon` | `ReactElement \| null`       | `null`                   | Elements rendered on either side of the input.                      |
+
+See [Autocomplete](../autocomplete/Autocomplete.md) for the full list.
 
 ## Demo
 
